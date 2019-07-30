@@ -1,6 +1,7 @@
 package com.rusinek.microservicesapp.services;
 
 import com.rusinek.microservicesapp.web.model.BeerDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -9,6 +10,7 @@ import java.util.UUID;
  * Created by Adrian Rusinek on 30.07.2019
  **/
 @Service
+@Slf4j
 public class BeerServiceImpl implements BeerService {
 
     @Override
@@ -29,5 +31,10 @@ public class BeerServiceImpl implements BeerService {
     @Override
     public void updateBeer(UUID beerId, BeerDto beerDto) {
         //todo impl - add real impl
+    }
+
+    @Override
+    public void deleteById(UUID beerId) {
+        log.debug("Deleting beer id: " + beerId);
     }
 }

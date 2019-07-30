@@ -1,13 +1,12 @@
 package com.rusinek.microservicesapp.web.controller;
 
 import com.rusinek.microservicesapp.services.CustomerService;
+import com.rusinek.microservicesapp.web.model.BeerDto;
 import com.rusinek.microservicesapp.web.model.CustomerDTO;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -27,5 +26,28 @@ public class CustomerController {
     @GetMapping("/{customerId}")
     public ResponseEntity<CustomerDTO> getCustomer(@PathVariable UUID customerId) {
         return new ResponseEntity<>(customerService.getCustomerById(customerId), HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> handlePost(@RequestBody BeerDto beerDto) {
+        CustomerDTO savedDto = customerService.saveNewCustomer(beerDto);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Location",
+                "http://localhost:8080/api/v1/customer/" + savedDto.getId().toString());
+
+        return new ResponseEntity<>(httpHeaders,HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{customerId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void handleUpdate(@PathVariable UUID customerId, @RequestBody CustomerDTO customerDTO) {
+        customerService.updateCustomer(customerId, customerDTO);
+    }
+
+    @DeleteMapping("/{customerId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById(@PathVariable UUID customerId) {
+        customerService.deleteById(customerId);
     }
 }
